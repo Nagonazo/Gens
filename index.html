@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>タップできる画像AR</title>
+    <meta name="description" content="画像をタップして拡大表示">
+    
+    <!-- A-Frameを読み込み -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    
+    <!-- AR.jsを読み込み -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    
+    <!-- タップイベント用のカスタムコンポーネント -->
+    <script>
+        AFRAME.registerComponent('tap-to-open', {
+            schema: {
+                url: {type: 'string'}
+            },
+            init: function () {
+                this.el.addEventListener('click', () => {
+                    // 新しいタブで画像を開く
+                    window.open(this.data.url, '_blank');
+                });
+                
+                // カーソルイベントも追加（モバイル対応）
+                this.el.addEventListener('touchstart', () => {
+                    window.open(this.data.url, '_blank');
+                });
+            }
+        });
+    </script>
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <!-- ARシーンの開始 -->
+    <a-scene embedded arjs cursor="rayOrigin: mouse">
+        
+        <!-- アセット定義 -->
+        <a-assets>
+            <img id="ar-image" src="images/ar-image.jpg" crossorigin="anonymous">
+        </a-assets>
+        
+        <!-- マーカーが検出されたときに表示される内容 -->
+        <a-marker preset="hiro">
+            <!-- タップ可能な画像平面 -->
+            <a-plane 
+                position="0 0.5 0" 
+                rotation="-90 0 0" 
+                width="2" 
+                height="2" 
+                material="src: #ar-image; transparent: true; alphaTest: 0.5"
+                tap-to-open="url: images/full-image.jpg"
+                animation="property: rotation; from: -90 0 0; to: -90 360 0; loop: true; dur: 10000"
+                class="clickable">
+            </a-plane>
+            
+            <!-- タップ指示テキスト -->
+            <a-text 
+                value="画像をタップ！" 
+                position="0 1.5 0" 
+                align="center" 
+                color="red"
+                animation="property: position; from: 0 1.5 0; to: 0 2 0; dir: alternate; loop: true; dur: 1000">
+            </a-text>
+            
+            <!-- 装飾的な枠 -->
+            <a-ring 
+                position="0 0.5 0" 
+                rotation="-90 0 0" 
+                radius-inner="1.1" 
+                radius-outer="1.2" 
+                material="color: gold; transparent: true; opacity: 0.8">
+            </a-ring>
+        </a-marker>
+        
+        <!-- カメラの設定（レイキャスト対応） -->
+        <a-entity camera look-controls cursor="rayOrigin: mouse; fuse: false"></a-entity>
+    </a-scene>
+</body>
+</html>

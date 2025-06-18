@@ -2,17 +2,48 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>段階式謎解きヒント（連続表示版）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>段階式謎解きヒント（スマホ対応）</title>
     <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1, h2, p {
+            text-align: center;
+        }
+
         .hint-box {
             margin-top: 20px;
-            padding: 10px;
+            padding: 15px;
             border-left: 4px solid #007BFF;
             background-color: #f0f8ff;
+            border-radius: 8px;
         }
+
         button {
             margin: 10px 5px;
-            padding: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 480px) {
+            button {
+                width: 100%;
+                margin: 10px 0;
+            }
         }
     </style>
 </head>
@@ -21,17 +52,18 @@
     <p>見たい謎を選んでください。</p>
 
     <!-- 謎の選択ボタン -->
-    <button onclick="selectPuzzle(1)">謎①</button>
-    <button onclick="selectPuzzle(2)">謎②</button>
-    <button onclick="selectPuzzle(3)">謎③</button>
-    <button onclick="selectPuzzle(4)">謎④</button>
+    <div style="text-align: center;">
+        <button onclick="selectPuzzle(1)">謎①</button>
+        <button onclick="selectPuzzle(2)">謎②</button>
+        <button onclick="selectPuzzle(3)">謎③</button>
+        <button onclick="selectPuzzle(4)">謎④</button>
+    </div>
 
     <!-- ヒント表示エリア -->
     <div id="hintArea" style="margin-top: 30px;"></div>
-    <div id="nextButtonArea"></div>
+    <div id="nextButtonArea" style="text-align: center;"></div>
 
     <script>
-        // ヒントデータ
         const hints = {
             1: ["謎① ヒント①：赤いものを探せ！", "謎① ヒント②：高い場所にあるよ。", "謎① ヒント③：答えは「りんご」"],
             2: ["謎② ヒント①：数字を並べ替えて！", "謎② ヒント②：時計がヒント。", "謎② ヒント③：答えは「12:30」"],

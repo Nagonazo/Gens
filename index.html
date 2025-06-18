@@ -2,10 +2,18 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>段階式謎解きヒント</title>
+    <title>段階式謎解きヒント（連続表示版）</title>
     <style>
-        .hint { display: none; margin-top: 20px; }
-        button { margin: 5px; padding: 10px; }
+        .hint-box {
+            margin-top: 20px;
+            padding: 10px;
+            border-left: 4px solid #007BFF;
+            background-color: #f0f8ff;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
@@ -19,7 +27,8 @@
     <button onclick="selectPuzzle(4)">謎④</button>
 
     <!-- ヒント表示エリア -->
-    <div id="hintArea" style="margin-top: 20px;"></div>
+    <div id="hintArea" style="margin-top: 30px;"></div>
+    <div id="nextButtonArea"></div>
 
     <script>
         // ヒントデータ
@@ -36,33 +45,37 @@
         function selectPuzzle(puzzleNumber) {
             currentPuzzle = puzzleNumber;
             currentStep = 0;
+            document.getElementById('hintArea').innerHTML = '';
+            document.getElementById('nextButtonArea').innerHTML = '';
             showNextHint();
         }
 
         function showNextHint() {
-            if (currentPuzzle === 0) return;
+            if (currentPuzzle === 0 || currentStep >= 3) return;
+
+            const hintText = hints[currentPuzzle][currentStep];
+            const hintHTML = `
+                <div class="hint-box">
+                    <h2>ヒント${currentStep + 1}</h2>
+                    <p>${hintText}</p>
+                </div>
+            `;
+            document.getElementById('hintArea').insertAdjacentHTML('beforeend', hintHTML);
 
             currentStep++;
-            const hintText = hints[currentPuzzle][currentStep - 1];
 
-            // ヒントエリアの更新
-            let hintHTML = `<h2>謎${currentPuzzle}のヒント${currentStep}</h2>`;
-            hintHTML += `<p>${hintText}</p>`;
-
-            // まだ次のヒントがある場合
             if (currentStep < 3) {
-                hintHTML += `<button onclick="showNextHint()">次のヒント</button>`;
+                document.getElementById('nextButtonArea').innerHTML = `<button onclick="showNextHint()">次のヒント</button>`;
             } else {
-                hintHTML += `<button onclick="reset()">最初に戻る</button>`;
+                document.getElementById('nextButtonArea').innerHTML = `<button onclick="reset()">最初に戻る</button>`;
             }
-
-            document.getElementById('hintArea').innerHTML = hintHTML;
         }
 
         function reset() {
             currentPuzzle = 0;
             currentStep = 0;
             document.getElementById('hintArea').innerHTML = '';
+            document.getElementById('nextButtonArea').innerHTML = '';
         }
     </script>
 </body>

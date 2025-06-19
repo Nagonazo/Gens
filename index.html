@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>段階式謎解きヒント（スマホ対応・確認あり・答え表示）</title>
+    <title>段階式謎解きヒント（最終問題付き・色分け）</title>
     <style>
         body {
             font-family: sans-serif;
@@ -39,6 +39,16 @@
             background-color: #0056b3;
         }
 
+        /* 謎⑤専用ボタンデザイン */
+        .final-button {
+            background-color: #ff5722; /* オレンジ */
+            color: white;
+        }
+
+        .final-button:hover {
+            background-color: #e64a19; /* オレンジ濃いめ */
+        }
+
         @media (max-width: 480px) {
             button {
                 width: 100%;
@@ -57,6 +67,7 @@
         <button onclick="selectPuzzle(2)">謎②</button>
         <button onclick="selectPuzzle(3)">謎③</button>
         <button onclick="selectPuzzle(4)">謎④</button>
+        <button class="final-button" onclick="selectPuzzle(5)">謎⑤</button> <!-- 謎⑤だけ色変更 -->
     </div>
 
     <!-- ヒント表示エリア -->
@@ -68,14 +79,16 @@
             1: ["謎① ヒント①：赤いものを探せ！", "謎① ヒント②：高い場所にあるよ。", "謎① ヒント③：最後はあの木の上。"],
             2: ["謎② ヒント①：数字を並べ替えて！", "謎② ヒント②：時計がヒント。", "謎② ヒント③：短針に注目！"],
             3: ["謎③ ヒント①：アルファベットがカギ。", "謎③ ヒント②：最初の文字に注目。", "謎③ ヒント③：Cから始まるよ。"],
-            4: ["謎④ ヒント①：音に注意して！", "謎④ ヒント②：3回鳴るときがチャンス。", "謎④ ヒント③：聞こえたら近くを探せ！"]
+            4: ["謎④ ヒント①：音に注意して！", "謎④ ヒント②：3回鳴るときがチャンス。", "謎④ ヒント③：聞こえたら近くを探せ！"],
+            5: ["謎⑤ ヒント①：4つの答えを並べ替えろ！", "謎⑤ ヒント②：順番はヒントに隠されている。", "謎⑤ ヒント③：新しい言葉を作ろう！"]
         };
 
         const answers = {
             1: "答え：りんご",
             2: "答え：12:30",
             3: "答え：CAT",
-            4: "答え：ベル"
+            4: "答え：ベル",
+            5: "答え：ゴール！（例）"
         };
 
         let currentPuzzle = 0;
@@ -91,6 +104,12 @@
 
         function showNextHint() {
             if (currentPuzzle === 0 || currentStep >= 3) return;
+
+            // 謎⑤だけ特別ダブル確認
+            if (currentPuzzle === 5) {
+                const allSolved = confirm("謎①〜④は全て解けていますか？");
+                if (!allSolved) return;
+            }
 
             const confirmShow = confirm(`このヒント${currentStep + 1}を本当に見ますか？`);
             if (!confirmShow) return;
@@ -109,7 +128,7 @@
             if (currentStep < 3) {
                 document.getElementById('nextButtonArea').innerHTML = `<button onclick="showNextHint()">次のヒント</button>`;
             } else {
-                document.getElementById('nextButtonArea').innerHTML = `<button onclick="showAnswer()">答えを見る</button>`;
+                document.getElementById('nextButtonArea').innerHTML = `<button onclick="showAnswer()">さらに見る（答え）</button>`;
             }
         }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>段階式謎解きヒント（スマホ対応）</title>
+    <title>段階式謎解きヒント（スマホ対応・確認あり）</title>
     <style>
         body {
             font-family: sans-serif;
@@ -53,10 +53,10 @@
 
     <!-- 謎の選択ボタン -->
     <div style="text-align: center;">
-        <button onclick="selectPuzzle(1)">謎(1)</button>
-        <button onclick="selectPuzzle(2)">謎(2)</button>
-        <button onclick="selectPuzzle(3)">謎(3)</button>
-        <button onclick="selectPuzzle(4)">謎(4)</button>
+        <button onclick="selectPuzzle(1)">謎①</button>
+        <button onclick="selectPuzzle(2)">謎②</button>
+        <button onclick="selectPuzzle(3)">謎③</button>
+        <button onclick="selectPuzzle(4)">謎④</button>
     </div>
 
     <!-- ヒント表示エリア -->
@@ -84,6 +84,10 @@
 
         function showNextHint() {
             if (currentPuzzle === 0 || currentStep >= 3) return;
+
+            // 確認ダイアログ
+            const confirmShow = confirm(`このヒント${currentStep + 1}を本当に見ますか？`);
+            if (!confirmShow) return; // キャンセルした場合、何もしない
 
             const hintText = hints[currentPuzzle][currentStep];
             const hintHTML = `

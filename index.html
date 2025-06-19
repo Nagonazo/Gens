@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>段階式謎解きヒント（スマホ対応・確認あり）</title>
+    <title>段階式謎解きヒント（スマホ対応・確認あり・答え表示）</title>
     <style>
         body {
             font-family: sans-serif;
@@ -65,10 +65,17 @@
 
     <script>
         const hints = {
-            1: ["謎① ヒント①：赤いものを探せ！", "謎① ヒント②：高い場所にあるよ。", "謎① ヒント③：答えは「りんご」"],
-            2: ["謎② ヒント①：数字を並べ替えて！", "謎② ヒント②：時計がヒント。", "謎② ヒント③：答えは「12:30」"],
-            3: ["謎③ ヒント①：アルファベットがカギ。", "謎③ ヒント②：最初の文字に注目。", "謎③ ヒント③：答えは「ABC」"],
-            4: ["謎④ ヒント①：音に注意して！", "謎④ ヒント②：3回鳴るときがチャンス。", "謎④ ヒント③：答えは「ベル」"]
+            1: ["謎① ヒント①：赤いものを探せ！", "謎① ヒント②：高い場所にあるよ。", "謎① ヒント③：最後はあの木の上。"],
+            2: ["謎② ヒント①：数字を並べ替えて！", "謎② ヒント②：時計がヒント。", "謎② ヒント③：短針に注目！"],
+            3: ["謎③ ヒント①：アルファベットがカギ。", "謎③ ヒント②：最初の文字に注目。", "謎③ ヒント③：Cから始まるよ。"],
+            4: ["謎④ ヒント①：音に注意して！", "謎④ ヒント②：3回鳴るときがチャンス。", "謎④ ヒント③：聞こえたら近くを探せ！"]
+        };
+
+        const answers = {
+            1: "答え：りんご",
+            2: "答え：12:30",
+            3: "答え：CAT",
+            4: "答え：ベル"
         };
 
         let currentPuzzle = 0;
@@ -85,9 +92,8 @@
         function showNextHint() {
             if (currentPuzzle === 0 || currentStep >= 3) return;
 
-            // 確認ダイアログ
             const confirmShow = confirm(`このヒント${currentStep + 1}を本当に見ますか？`);
-            if (!confirmShow) return; // キャンセルした場合、何もしない
+            if (!confirmShow) return;
 
             const hintText = hints[currentPuzzle][currentStep];
             const hintHTML = `
@@ -103,8 +109,24 @@
             if (currentStep < 3) {
                 document.getElementById('nextButtonArea').innerHTML = `<button onclick="showNextHint()">次のヒント</button>`;
             } else {
-                document.getElementById('nextButtonArea').innerHTML = `<button onclick="reset()">最初に戻る</button>`;
+                document.getElementById('nextButtonArea').innerHTML = `<button onclick="showAnswer()">さらに見る（答え）</button>`;
             }
+        }
+
+        function showAnswer() {
+            const confirmShow = confirm("本当に答えを見ますか？");
+            if (!confirmShow) return;
+
+            const answerText = answers[currentPuzzle];
+            const answerHTML = `
+                <div class="hint-box" style="background-color: #ffebee; border-left-color: #e53935;">
+                    <h2>答え</h2>
+                    <p>${answerText}</p>
+                </div>
+            `;
+            document.getElementById('hintArea').insertAdjacentHTML('beforeend', answerHTML);
+
+            document.getElementById('nextButtonArea').innerHTML = `<button onclick="reset()">最初に戻る</button>`;
         }
 
         function reset() {

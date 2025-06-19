@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>段階式謎解きヒント（最終問題付き・色分け）</title>
+    <title>段階式謎解きヒント（改良版）</title>
     <style>
         body {
             font-family: sans-serif;
@@ -23,6 +23,15 @@
             border-left: 4px solid #007BFF;
             background-color: #f0f8ff;
             border-radius: 8px;
+            font-size: 20px; /* ヒント文字大きく */
+        }
+
+        .confirm-text {
+            font-size: 24px; /* 確認文大きく */
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #e53935;
         }
 
         button {
@@ -63,12 +72,15 @@
 
     <!-- 謎の選択ボタン -->
     <div style="text-align: center;">
-        <button onclick="selectPuzzle(1)">謎①</button>
-        <button onclick="selectPuzzle(2)">謎②</button>
-        <button onclick="selectPuzzle(3)">謎③</button>
-        <button onclick="selectPuzzle(4)">謎④</button>
-        <button class="final-button" onclick="selectPuzzle(5)">謎⑤</button> <!-- 謎⑤だけ色変更 -->
+        <button onclick="selectPuzzle(1)">謎(1)</button>
+        <button onclick="selectPuzzle(2)">謎(2)</button>
+        <button onclick="selectPuzzle(3)">謎(3)</button>
+        <button onclick="selectPuzzle(4)">謎(4)</button>
+        <button class="final-button" onclick="selectPuzzle(5)">謎(5)</button> <!-- 謎⑤だけ色変更 -->
     </div>
+
+    <!-- 確認メッセージ表示エリア -->
+    <div id="confirmArea" class="confirm-text"></div>
 
     <!-- ヒント表示エリア -->
     <div id="hintArea" style="margin-top: 30px;"></div>
@@ -79,23 +91,23 @@
             1: ["謎① ヒント①：数字は26まであるようだ",
                 "謎① ヒント②：日本語を変換してみよう",
                 "謎① ヒント③：送り仮名が き で揃ってるね！"
-               ],
+            ],
             2: ["謎② ヒント①：2014は2文字、2015は3文字",
                 "謎② ヒント②：全部で12種類あるよ",
                 "謎② ヒント③：2025年は巳年だよ"
-               ],
+            ],
             3: ["謎③ ヒント①：右の熟語をひらがなにしてみよう",
                 "謎③ ヒント②：羊が1匹、羊が2匹、、、眠くなってきたな",
                 "謎③ ヒント③：それぞれのものの数え方を考えてみよう"
-               ],
+            ],
             4: ["謎④ ヒント①：太陽のマークを思い浮かべてみて",
                 "謎④ ヒント②：☼このマークだね",
                 "謎④ ヒント③：地理の授業を思い出してみて"
-               ],
+            ],
             5: ["謎⑤ ヒント①：消える というのがポイント",
                 "謎⑤ ヒント②：消えるのは 手、大軍、エキ の3つ",
                 "謎⑤ ヒント③：拡は何へん？"
-               ]
+            ]
         };
 
         const answers = {
@@ -114,6 +126,7 @@
             currentStep = 0;
             document.getElementById('hintArea').innerHTML = '';
             document.getElementById('nextButtonArea').innerHTML = '';
+            document.getElementById('confirmArea').innerHTML = '';
             showNextHint();
         }
 
@@ -121,13 +134,20 @@
             if (currentPuzzle === 0 || currentStep >= 3) return;
 
             // 謎⑤だけ特別ダブル確認
-            if (currentPuzzle === 5) {
+            if (currentPuzzle === 5 && currentStep === 0) {
                 const allSolved = confirm("謎①〜④は全て解けていますか？");
                 if (!allSolved) return;
             }
 
-            const confirmShow = confirm(`このヒント${currentStep + 1}を本当に見ますか？`);
-            if (!confirmShow) return;
+            // ページ内に確認文表示
+            document.getElementById('confirmArea').innerHTML = `このヒント${currentStep + 1}を本当に見ますか？`;
+
+            // 確認ボタン表示
+            document.getElementById('nextButtonArea').innerHTML = `<button onclick="displayHint()">はい</button>`;
+        }
+
+        function displayHint() {
+            document.getElementById('confirmArea').innerHTML = '';
 
             const hintText = hints[currentPuzzle][currentStep];
             const hintHTML = `
@@ -148,8 +168,12 @@
         }
 
         function showAnswer() {
-            const confirmShow = confirm("本当に答えを見ますか？");
-            if (!confirmShow) return;
+            document.getElementById('confirmArea').innerHTML = '本当に答えを見ますか？';
+            document.getElementById('nextButtonArea').innerHTML = `<button onclick="displayAnswer()">はい</button>`;
+        }
+
+        function displayAnswer() {
+            document.getElementById('confirmArea').innerHTML = '';
 
             const answerText = answers[currentPuzzle];
             const answerHTML = `
@@ -168,6 +192,7 @@
             currentStep = 0;
             document.getElementById('hintArea').innerHTML = '';
             document.getElementById('nextButtonArea').innerHTML = '';
+            document.getElementById('confirmArea').innerHTML = '';
         }
     </script>
 </body>

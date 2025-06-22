@@ -48,7 +48,7 @@
             background-color: #0056b3;
         }
 
-        /* 謎⑤専用ボタンデザイン */
+        /* 謎⑤・謎⑥専用ボタンデザイン */
         .final-button {
             background-color: #ff5722;
             color: white;
@@ -56,13 +56,6 @@
 
         .final-button:hover {
             background-color: #e64a19;
-        }
-
-        /* 謎⑥専用ボタンデザイン（初期ロック） */
-        .locked-button {
-            background-color: gray;
-            color: white;
-            cursor: not-allowed;
         }
 
         /* 答えボタン（赤） */
@@ -94,7 +87,7 @@
         <button onclick="selectPuzzle(3)">謎(3)</button>
         <button onclick="selectPuzzle(4)">謎(4)</button>
         <button class="final-button" onclick="selectPuzzle(5)">謎(5)</button>
-        <button id="puzzle6Button" class="locked-button" disabled>謎(6)</button>
+        <button class="final-button" onclick="selectPuzzle(6)">謎(6)</button>
     </div>
 
     <!-- 確認メッセージ表示エリア -->
@@ -145,10 +138,6 @@
         let currentStep = 0;
 
         function selectPuzzle(puzzleNumber) {
-            if (puzzleNumber === 6 && document.getElementById('puzzle6Button').disabled) {
-                alert("謎(6)は謎(5)をクリアしないと解けません！");
-                return;
-            }
             startPuzzle(puzzleNumber);
         }
 
@@ -198,7 +187,7 @@
             if (currentStep < 3) {
                 document.getElementById('nextButtonArea').innerHTML = `<button onclick="showNextHint()">次のヒント</button>`;
             } else {
-                document.getElementById('nextButtonArea').innerHTML = `<button class="answer-button" onclick="showAnswer()">さらに見る（答え）</button>`;
+                document.getElementById('nextButtonArea').innerHTML = `<button class="answer-button" onclick="showAnswer()">答えを表示</button>`;
             }
         }
 
@@ -218,14 +207,6 @@
                 </div>
             `;
             document.getElementById('hintArea').insertAdjacentHTML('beforeend', answerHTML);
-
-            // 謎(5)クリア後に謎(6)解放
-            if (currentPuzzle === 5) {
-                const button6 = document.getElementById('puzzle6Button');
-                button6.disabled = false;
-                button6.classList.remove('locked-button');
-                button6.classList.add('final-button');
-            }
 
             document.getElementById('nextButtonArea').innerHTML = `<button onclick="reset()">最初に戻る</button>`;
         }

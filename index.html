@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>段階式謎解きヒント（謎⑥付き）</title>
+    <title>段階式謎解きヒントサイト（確認付き・謎⑥あり）</title>
     <style>
         body {
             font-family: sans-serif;
@@ -58,7 +58,7 @@
             background-color: #e64a19;
         }
 
-        /* 謎⑥専用ボタンデザイン（画像問題） */
+        /* 謎⑥専用ボタンデザイン（初期ロック） */
         .locked-button {
             background-color: gray;
             color: white;
@@ -135,13 +135,11 @@
         let currentStep = 0;
 
         function selectPuzzle(puzzleNumber) {
-            if (puzzleNumber === 6 && !document.getElementById('puzzle6Button').disabled) {
-                startPuzzle(puzzleNumber);
-            } else if (puzzleNumber === 6 && document.getElementById('puzzle6Button').disabled) {
+            if (puzzleNumber === 6 && document.getElementById('puzzle6Button').disabled) {
                 alert("謎(6)は謎(5)をクリアしないと解けません！");
-            } else {
-                startPuzzle(puzzleNumber);
+                return;
             }
+            startPuzzle(puzzleNumber);
         }
 
         function startPuzzle(puzzleNumber) {
@@ -156,11 +154,13 @@
         function showNextHint() {
             if (currentPuzzle === 0 || currentStep >= 3) return;
 
-            if (currentPuzzle === 5 && currentStep === 0) {
-                const allSolved = confirm("謎①〜④は全て解けていますか？");
+            // 謎(5)・謎(6)確認ダイアログ
+            if ((currentPuzzle === 5 || currentPuzzle === 6) && currentStep === 0) {
+                const allSolved = confirm(`謎(5)は解けていますか？`);
                 if (!allSolved) return;
             }
 
+            // ページ内に確認文表示
             document.getElementById('confirmArea').innerHTML = `このヒント${currentStep + 1}を本当に見ますか？`;
             document.getElementById('nextButtonArea').innerHTML = `<button onclick="displayHint()">はい</button>`;
         }
@@ -203,8 +203,8 @@
             `;
             document.getElementById('hintArea').insertAdjacentHTML('beforeend', answerHTML);
 
+            // 謎(5)クリア後に謎(6)解放
             if (currentPuzzle === 5) {
-                // 謎(6)をアンロック
                 const button6 = document.getElementById('puzzle6Button');
                 button6.disabled = false;
                 button6.classList.remove('locked-button');

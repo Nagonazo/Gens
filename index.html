@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>段階式謎解きヒント（改良版）</title>
+    <title>段階式謎解きヒント（謎⑥付き）</title>
     <style>
         body {
             font-family: sans-serif;
@@ -50,12 +50,19 @@
 
         /* 謎⑤専用ボタンデザイン */
         .final-button {
-            background-color: #ff5722; /* オレンジ */
+            background-color: #ff5722;
             color: white;
         }
 
         .final-button:hover {
-            background-color: #e64a19; /* オレンジ濃いめ */
+            background-color: #e64a19;
+        }
+
+        /* 謎⑥専用ボタンデザイン（画像問題） */
+        .locked-button {
+            background-color: gray;
+            color: white;
+            cursor: not-allowed;
         }
 
         @media (max-width: 480px) {
@@ -76,7 +83,8 @@
         <button onclick="selectPuzzle(2)">謎(2)</button>
         <button onclick="selectPuzzle(3)">謎(3)</button>
         <button onclick="selectPuzzle(4)">謎(4)</button>
-        <button class="final-button" onclick="selectPuzzle(5)">謎(5)</button> <!-- 謎⑤だけ色変更 -->
+        <button class="final-button" onclick="selectPuzzle(5)">謎(5)</button>
+        <button id="puzzle6Button" class="locked-button" disabled>謎(6)</button>
     </div>
 
     <!-- 確認メッセージ表示エリア -->
@@ -107,6 +115,10 @@
             5: ["謎⑤ ヒント①：消える というのがポイント",
                 "謎⑤ ヒント②：消えるのは 手、大軍、エキ の3つ",
                 "謎⑤ ヒント③：拡は何へん？"
+            ],
+            6: ["謎⑥ ヒント①：<img src='images/hint1.jpg' alt='ヒント画像1' style='max-width:100%;'>",
+                "謎⑥ ヒント②：<img src='images/hint2.jpg' alt='ヒント画像2' style='max-width:100%;'>",
+                "謎⑥ ヒント③：<img src='images/hint3.jpg' alt='ヒント画像3' style='max-width:100%;'>"
             ]
         };
 
@@ -115,13 +127,24 @@
             2: "答え：の",
             3: "答え：拡大",
             4: "答え：工場",
-            5: "答え：光の広場"
+            5: "答え：光の広場",
+            6: "答え：写真に隠されたキーワード"
         };
 
         let currentPuzzle = 0;
         let currentStep = 0;
 
         function selectPuzzle(puzzleNumber) {
+            if (puzzleNumber === 6 && !document.getElementById('puzzle6Button').disabled) {
+                startPuzzle(puzzleNumber);
+            } else if (puzzleNumber === 6 && document.getElementById('puzzle6Button').disabled) {
+                alert("謎(6)は謎(5)をクリアしないと解けません！");
+            } else {
+                startPuzzle(puzzleNumber);
+            }
+        }
+
+        function startPuzzle(puzzleNumber) {
             currentPuzzle = puzzleNumber;
             currentStep = 0;
             document.getElementById('hintArea').innerHTML = '';
@@ -133,16 +156,12 @@
         function showNextHint() {
             if (currentPuzzle === 0 || currentStep >= 3) return;
 
-            // 謎⑤だけ特別ダブル確認
             if (currentPuzzle === 5 && currentStep === 0) {
                 const allSolved = confirm("謎①〜④は全て解けていますか？");
                 if (!allSolved) return;
             }
 
-            // ページ内に確認文表示
             document.getElementById('confirmArea').innerHTML = `このヒント${currentStep + 1}を本当に見ますか？`;
-
-            // 確認ボタン表示
             document.getElementById('nextButtonArea').innerHTML = `<button onclick="displayHint()">はい</button>`;
         }
 
@@ -183,6 +202,14 @@
                 </div>
             `;
             document.getElementById('hintArea').insertAdjacentHTML('beforeend', answerHTML);
+
+            if (currentPuzzle === 5) {
+                // 謎(6)をアンロック
+                const button6 = document.getElementById('puzzle6Button');
+                button6.disabled = false;
+                button6.classList.remove('locked-button');
+                button6.classList.add('final-button');
+            }
 
             document.getElementById('nextButtonArea').innerHTML = `<button onclick="reset()">最初に戻る</button>`;
         }
